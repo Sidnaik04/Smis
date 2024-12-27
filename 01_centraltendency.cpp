@@ -34,11 +34,9 @@ float median(int arr[], int size)
 }
 
 // To calculate mode
-float mode(int arr[], int size)
-{
+float mode(int arr[], int size) {
     // Need at least 2 numbers to have a mode
-    if (size < 2)
-    {
+    if (size < 2) {
         return 0;
     }
 
@@ -47,27 +45,16 @@ float mode(int arr[], int size)
     int mode_value = arr[0];
 
     // Count consecutive equal numbers in sorted array
-    for (int i = 0; i < size; i++)
-    {
-        if (arr[i] == arr[i - 1])
-        {
+    for (int i = 1; i < size; i++) {  // Start from 1, not 0
+        if (arr[i] == arr[i - 1]) {
             current_count++;
-        }
-        else
-        {
-            if (current_count > max_count)
-            {
+            if (current_count > max_count) {  // Update mode if current count is higher
                 max_count = current_count;
-                mode_value = arr[i - 1];
+                mode_value = arr[i];
             }
-            current_count = 1;
+        } else {
+            current_count = 1;  // Reset count when number changes
         }
-    }
-
-    // Check one last time for the last group of numbers
-    if (current_count > max_count)
-    {
-        mode_value = arr[size - 1];
     }
 
     // Return 0 if no mode exists (no number appears more than once)
