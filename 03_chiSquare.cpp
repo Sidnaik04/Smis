@@ -1,90 +1,75 @@
-// Program for chi-sqaure test
-
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
-// to calculated expected frequency -> formula
+// Calculate expected frequency
 float calcExpected(float colSum, float rowSum, float grandTotal)
 {
     return (colSum * rowSum) / grandTotal;
 }
 
-// to calculate chisqaure -> formula
-float chiSquareTest(const float observerd[], const float expected[], int size)
+// Calculate chi-square value
+float chiSquareTest(const float observed[], const float expected[], int size)
 {
-    float chiSqaure = 0.0;
-
+    float chiSquare = 0.0;
     for (int i = 0; i < size; ++i)
     {
-        if (expected[i] == 0)
+        if (expected[i] <= 0) 
         {
-            cout << "Expected frequency cannot be zero" << endl;
+            cout << "Error: Expected frequency cannot be zero or negative." << endl;
             return -1;
         }
-        float difference = observerd[i] - expected[i];
-        chiSqaure += (difference * difference) / expected[i];
+        //formula
+        float difference = observed[i] - expected[i];
+        chiSquare += (difference * difference) / expected[i];
     }
-
-    return chiSqaure;
+    return chiSquare;
 }
 
 int main()
 {
-
-    // number of rows and columns of table
     int numRows, numCols;
     cout << "Enter the number of rows and columns: ";
     cin >> numRows >> numCols;
 
-    // grand total of table
     int grandTotal;
     cout << "Enter the grand total: ";
     cin >> grandTotal;
 
-    // individual row sum and column sum
-    int rowSums[numRows], colSums[numCols];
+    float rowSums[numRows], colSums[numCols];
     cout << "Enter the row sums: ";
-    for (int &rowSum : rowSums)
-    {
-        cin >> rowSum;
-    }
+    for (int i = 0; i < numRows; ++i)
+        cin >> rowSums[i];
 
     cout << "Enter the column sums: ";
-    for (int &colSum : colSums)
-    {
-        cin >> colSum;
-    }
+    for (int i = 0; i < numCols; ++i)
+        cin >> colSums[i];
 
-    // size of table
     int size = numRows * numCols;
     float observed[size], expected[size];
 
-    // enter observed frequency from table
     cout << "Enter the observed frequencies: ";
-    for (float &obs : observed)
-    {
-        cin >> obs;
-    }
+    for (int i = 0; i < size; ++i)
+        cin >> observed[i];
 
-    // expected frequency
+    // Calculate expected frequencies
     for (int i = 0, index = 0; i < numRows; ++i)
     {
         for (int j = 0; j < numCols; ++j)
         {
-            expected[index++] = calcExpected(colSums[j], rowSums[i], grandTotal);
+            expected[index] = calcExpected(colSums[j], rowSums[i], grandTotal);
+            cout << "Expected[" << index << "] = " << expected[index] << endl; // Debug print
+            ++index;
         }
     }
 
-    // result
-    float chiSquareValue = chiSquareTest(observed, expected, size);
-    if (chiSquareValue >= 0)
-    {
-        cout << "Chi-square Value: " << chiSquareValue << endl;
-    }
+    // Compute chi-square value
+    float result = chiSquareTest(observed, expected, size);
+
+    if (result >= 0)
+        cout << "Chi-square value: " << fixed << setprecision(2) << result << endl;
     else
-    {
         cout << "Error in calculation" << endl;
-    }
 
     return 0;
 }
